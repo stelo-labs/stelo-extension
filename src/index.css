@@ -1,0 +1,66 @@
+
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('/src/static/SpaceGrotesk-Light.ttf')  format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('/src/static/SpaceGrotesk-Regular.ttf')  format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('/src/static/SpaceGrotesk-Medium.ttf')  format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('/src/static/SpaceGrotesk-SemiBold.ttf')  format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('/src/static/SpaceGrotesk-Bold.ttf')  format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: auto;
+}
+*{
+  font-family: 'SpaceGrotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'SpaceGrotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Fix bad storybook padding... Probably a better way */
+.sb-main-padded{
+  padding: 0 !important;
+}
