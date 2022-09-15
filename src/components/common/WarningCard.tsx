@@ -10,9 +10,7 @@ export const WarningCard = () => {
   const { setWarning, riskResult } = useAppState();
   const onContinue = () => setWarning(false);
   const text =
-    riskResult.riskFactors.length > 0
-      ? riskResult.riskFactors[0].text
-      : "Stelo believes this transaction is malicious.";
+    riskResult.riskFactors.length > 0 ? riskResult.riskFactors[0].text : null;
   return (
     <>
       <Box marginLeft="6x" marginRight="6x" marginBottom="8x">
@@ -29,8 +27,13 @@ export const WarningCard = () => {
               ></ShieldExclamationIcon>
             </Box>
             <Text size="20" textAlign="center" weight={800}>
-              {text}
+              Stelo believes this transaction is malicious
             </Text>
+            {text && (
+              <Text size="18" textAlign="center" weight={400}>
+                {text}
+              </Text>
+            )}
             <Box
               style={{ cursor: "pointer" }}
               color="gray300"
