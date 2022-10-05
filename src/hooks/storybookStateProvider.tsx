@@ -17,8 +17,9 @@ import {
   setWarningCreator,
   setRiskResultCreator,
   setLoadingCreator,
-  stringifyEthSendTransactionParams,
+  getMassagedParams,
   PARSE_RPC_REQUEST_QUERY,
+  setUrlCreator,
 } from "./sharedStateContext";
 // Need to figure out how to mock `popRequestForId` than we can remove this
 
@@ -37,6 +38,7 @@ export function StorybookStateProvider({
   const setBackgroundGradient = setBackgroundGradientCreator(dispatch);
   const setAppMode = setAppModeCreator(dispatch);
   const setRequest = setRequestCreator(dispatch);
+  const setUrl = setUrlCreator(dispatch);
   const setDappInfo = setDappInfoCreator(dispatch);
   const setParsing = setParsingCreator(dispatch);
   const setLoading = setLoadingCreator(dispatch);
@@ -55,18 +57,18 @@ export function StorybookStateProvider({
         return;
       }
       if (!state.request) throw new Error("Need Request");
-      const massagedRequest = stringifyEthSendTransactionParams(state.request);
-      const { data: parsedRequestData, error } = await parseRequestQuery({
+      const massagedParams = getMassagedParams(state.request);
+      const { data } = await parseRequestQuery({
         variables: {
           method: state.request.method,
-          params: massagedRequest.params,
+          params: massagedParams,
           userAddress: state.request.userAddress,
         },
       });
 
       const parsedRequest =
-        parsedRequestData?.RPCRequest?.parsedSignature ||
-        parsedRequestData?.RPCRequest?.parsedTransaction;
+        data?.RPCRequest?.parsedSignature ||
+        data?.RPCRequest?.parsedTransaction;
 
       setParsedRequest(parsedRequest);
       setLoading(false);
@@ -83,6 +85,7 @@ export function StorybookStateProvider({
         setBackgroundGradient,
         setAppMode,
         setRequest,
+        setUrl,
         setDappInfo,
         setParsing,
         setLoading,

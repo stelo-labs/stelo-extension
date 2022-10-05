@@ -222,7 +222,7 @@ export type Query = {
 export type QueryRpcRequestArgs = {
   method: Scalars["String"];
   params: Array<Scalars["String"]>;
-  userAddress: Scalars["String"];
+  userAddress?: InputMaybe<Scalars["String"]>;
 };
 
 export type QueryContractArgs = {
@@ -235,7 +235,8 @@ export type QueryContractBytecodeArgs = {
 };
 
 export type QueryDappArgs = {
-  rootUrl: Scalars["String"];
+  rootUrl?: InputMaybe<Scalars["String"]>;
+  url?: InputMaybe<Scalars["String"]>;
 };
 
 export type QueryErc20Args = {
@@ -277,7 +278,8 @@ export type RpcRequest = {
 };
 
 export type RpcRequestRiskArgs = {
-  rootUrl: Scalars["String"];
+  rootUrl?: InputMaybe<Scalars["String"]>;
+  url?: InputMaybe<Scalars["String"]>;
 };
 
 export type RiskFactor = {
@@ -817,7 +819,7 @@ export type SimulationQuery = {
 export type ParseRpcRequestQueryVariables = Exact<{
   method: Scalars["String"];
   params: Array<Scalars["String"]> | Scalars["String"];
-  userAddress: Scalars["String"];
+  userAddress?: InputMaybe<Scalars["String"]>;
 }>;
 
 export type ParseRpcRequestQuery = {
@@ -832,8 +834,8 @@ export type ParseRpcRequestQuery = {
 export type RiskAnalysisQueryVariables = Exact<{
   method: Scalars["String"];
   params: Array<Scalars["String"]> | Scalars["String"];
-  userAddress: Scalars["String"];
-  rootUrl: Scalars["String"];
+  userAddress?: InputMaybe<Scalars["String"]>;
+  url: Scalars["String"];
 }>;
 
 export type RiskAnalysisQuery = {
@@ -863,7 +865,7 @@ export type CreateEventMutation = {
 };
 
 export type DappStatusQueryVariables = Exact<{
-  dappRootUrl: Scalars["String"];
+  url: Scalars["String"];
 }>;
 
 export type DappStatusQuery = {

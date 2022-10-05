@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Stelo",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "action": { "default_popup": "src/index.html" },
   "background": {
     "service_worker": "./src/worker/index.ts"

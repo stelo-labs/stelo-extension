@@ -132,7 +132,7 @@ export const SimulationResultSection = ({
         overflowY: "hidden",
       }}
     >
-      <div ref={displayedScreen} style={{ display: "inline-block" }}>
+      <div ref={displayedScreen} style={{ display: "block" }}>
         {loading && (
           <PlaceholderSimulationSection
             height={140}

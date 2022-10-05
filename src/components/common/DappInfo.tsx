@@ -7,7 +7,7 @@ import { Box, BoxProps } from "../layout/Box";
 import { Inline } from "../layout/Inline";
 import { Text } from "../layout/Text";
 import Stack from "../layout/Stack";
-import React, { useEffect } from "react";
+import React from "react";
 import { useAppState } from "../../hooks/sharedStateContext";
 import { RiskScore } from "../../generated/graphql";
 
@@ -24,8 +24,6 @@ export type DappStatus = {
   approvalStatus: ListStatus;
   allowedContracts: ({ id: string } | null)[];
 };
-
-type DappInfoProps = DappStatus;
 
 export const DappInfo = () => {
   const { riskResult, dappInfo } = useAppState();

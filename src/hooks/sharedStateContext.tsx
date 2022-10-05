@@ -15,7 +15,7 @@ export const PARSE_RPC_REQUEST_QUERY = gql`
   query ParseRPCRequest(
     $method: String!
     $params: [String!]!
-    $userAddress: String!
+    $userAddress: String
   ) {
     RPCRequest(method: $method, params: $params, userAddress: $userAddress) {
       parsedSignature
@@ -28,11 +28,11 @@ export const RISK_ANALYSIS_QUERY = gql`
   query RiskAnalysis(
     $method: String!
     $params: [String!]!
-    $userAddress: String!
-    $rootUrl: String!
+    $userAddress: String
+    $url: String!
   ) {
     RPCRequest(method: $method, params: $params, userAddress: $userAddress) {
-      risk(rootUrl: $rootUrl) {
+      risk(url: $url) {
         riskScore
         riskFactors {
           score
@@ -50,8 +50,8 @@ export const CREATE_ANALYTICS_EVENT_QUERY = gql`
 `;
 
 export const DAPP_STATUS_QUERY = gql`
-  query DappStatus($dappRootUrl: String!) {
-    dapp(rootUrl: $dappRootUrl) {
+  query DappStatus($url: String!) {
+    dapp(url: $url) {
       rootUrl
       approvalStatus
       allowedContracts {
@@ -78,6 +78,7 @@ export type AppState = {
   backgroundGradient: BoxProps["background"];
   appMode: AppMode;
   requestId: string;
+  url: string;
   request: SteloRequest | undefined;
   parsedRequest: ParsedRPCRequest | undefined;
   dappInfo: DappStatus;
@@ -91,6 +92,7 @@ export const initialState: AppState = {
   appMode: "standard",
   backgroundGradient: "unknown",
   requestId: "",
+  url: "unknown",
   dappInfo: defaultDappStatus,
   request: undefined,
   parsedRequest: undefined,
@@ -174,6 +176,13 @@ export type setParsedRequest = {
   };
 };
 
+export type SetUrl = {
+  type: "set_url";
+  data: {
+    url: string;
+  };
+};
+
 export type SetRiskResult = {
   type: "set_risk_result";
   data: {
@@ -187,6 +196,7 @@ export type Action =
   | setRequest
   | SetGradient
   | setParsedRequest
+  | SetUrl
   | SetParsing
   | SetLoading
   | SetWarning
@@ -223,6 +233,14 @@ export const setRequestCreator = actionCreator(
     };
   }
 );
+
+export const setUrlCreator = actionCreator((url: AppState["url"]) => {
+  return {
+    type: "set_url",
+    data: { url },
+  };
+});
+
 export const setDappInfoCreator = actionCreator(
   (dappInfo: NonNullable<AppState["dappInfo"]>) => {
     return {
@@ -231,6 +249,7 @@ export const setDappInfoCreator = actionCreator(
     };
   }
 );
+
 export const setParsingCreator = actionCreator((parsing: boolean) => {
   return {
     type: "set_parsing",
@@ -288,6 +307,8 @@ export const appStateReducer = (state: AppState, action: Action): AppState => {
       return { ...state, dappInfo: action.data.dappInfo };
     case "set_request":
       return { ...state, request: action.data.request };
+    case "set_url":
+      return { ...state, url: action.data.url };
     case "set_risk_result":
       return { ...state, riskResult: action.data.riskResult };
     case "set_parsed_request":
@@ -307,6 +328,7 @@ export type AppStateContextType = {
   setBackgroundGradient: F.Return<typeof setBackgroundGradientCreator>;
   setAppMode: F.Return<typeof setAppModeCreator>;
   setRequest: F.Return<typeof setRequestCreator>;
+  setUrl: F.Return<typeof setUrlCreator>;
   setDappInfo: F.Return<typeof setDappInfoCreator>;
   setParsing: F.Return<typeof setParsingCreator>;
   setLoading: F.Return<typeof setLoadingCreator>;
@@ -340,6 +362,7 @@ export function useAppState() {
     setBackgroundGradient,
     setAppMode,
     setRequest,
+    setUrl,
     setDappInfo,
     setParsing,
     setLoading,
@@ -354,6 +377,7 @@ export function useAppState() {
     setBackgroundGradient,
     setAppMode,
     setRequest,
+    setUrl,
     setDappInfo,
     setParsing,
     setLoading,
@@ -368,12 +392,10 @@ export function useAppState() {
                               UTILS
 //////////////////////////////////////////////////////////////*/
 
-//TODO: super gross, remove when we can
-export const stringifyEthSendTransactionParams = (request: SteloRequest) => {
-  if (request.method === "eth_sendTransaction") {
-    let params = [JSON.stringify(request.params?.[0] || {})];
-    return { ...request, params };
-  } else {
-    return request;
-  }
+export const getMassagedParams = (request: SteloRequest) => {
+  if (request.method === "eth_sendTransaction")
+    return [JSON.stringify(request.params?.[0] || {})];
+
+  // Need to do this because some websites insert a null param for no clear reason
+  return request.params?.filter((p) => !!p) || [];
 };
