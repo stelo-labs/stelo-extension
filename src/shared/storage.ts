@@ -7,8 +7,8 @@ import { TxRequestStorage } from "../worker/types";
  */
 export const TxRequestStore = getBucket<TxRequestStorage>("txRequest");
 
-export const popRequestForId = async (requestId: string) => {
+export const popRequestForId = async (rpcRequestId: string) => {
   const txRequests = await TxRequestStore.get();
-  const txRequest = txRequests[requestId];
+  const txRequest = txRequests[rpcRequestId];
   return txRequest;
 };

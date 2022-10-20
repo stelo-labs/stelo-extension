@@ -4,6 +4,7 @@ import { ApproveOrReject } from "../common/drawer/ApproveOrReject";
 import { Card } from "../layout/Card";
 import { AnalyticsEvent, useAppState } from "../../hooks/sharedStateContext";
 import { useEffect } from "react";
+import LogStore from "../../shared/LogStore";
 
 const NoTxErrorContents = () => {
   return (
@@ -56,19 +57,30 @@ const ErrorBase: React.FC = (props) => {
   );
 };
 
-export const TxErrorView = () => {
-  const { requestId, setWarning } = useAppState();
+export const ErrorBoundaryTxErrorView = ({ error }: { error: Error }) => {
+  return <TxErrorView analyticsMessage={error.message} />;
+};
+
+export const TxErrorView = ({
+  analyticsMessage,
+}: {
+  analyticsMessage: string;
+}) => {
+  const { rpcRequestId, setWarning } = useAppState();
   const { createEvent } = useAppState();
   useEffect(() => {
     setWarning(false);
-    createEvent(AnalyticsEvent.ERROR);
+    createEvent(AnalyticsEvent.ERROR, {
+      message: analyticsMessage,
+      logs: LogStore.logs,
+    });
   }, []);
   return (
     <>
       <ErrorBase>
-        {requestId ? <ParsingErrorContents /> : <NoTxErrorContents />}
+        {rpcRequestId ? <ParsingErrorContents /> : <NoTxErrorContents />}
       </ErrorBase>
-      {requestId && <ApproveOrReject color={"tertiary"} />}
+      {rpcRequestId && <ApproveOrReject color={"tertiary"} error={true} />}
     </>
   );
 };

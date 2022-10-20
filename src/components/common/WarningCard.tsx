@@ -1,16 +1,19 @@
+import { useEffect } from "react";
 import { ShieldExclamationIcon } from "@heroicons/react/solid";
 import { Box } from "../layout/Box";
 import { Card } from "../layout/Card";
 import { Text } from "../layout/Text";
 import Stack from "../layout/Stack";
-import { useAppState } from "../../hooks/sharedStateContext";
+import { AnalyticsEvent, useAppState } from "../../hooks/sharedStateContext";
 import { ApproveOrReject } from "./drawer/ApproveOrReject";
 
 export const WarningCard = () => {
-  const { setWarning, riskResult } = useAppState();
+  const { createEvent, setWarning, riskResult } = useAppState();
   const onContinue = () => setWarning(false);
   const text =
     riskResult.riskFactors.length > 0 ? riskResult.riskFactors[0].text : null;
+
+  useEffect(() => createEvent(AnalyticsEvent.LOAD_SUCCEEDED), []);
   return (
     <>
       <Box marginLeft="6x" marginRight="6x" marginBottom="8x">

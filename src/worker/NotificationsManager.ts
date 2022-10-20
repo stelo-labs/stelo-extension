@@ -35,7 +35,7 @@ export default class NotificationManager {
    * notification windows are given a 'popup' type.
    *
    */
-  async showPopup(requestId: UUID) {
+  async showPopup(rpcRequestId: UUID) {
     const popup = await this._getPopup();
 
     // Bring focus to chrome popup
@@ -58,7 +58,7 @@ export default class NotificationManager {
 
     // create new notification popup
     const popupWindow = await this.platform.openWindow({
-      url: `src/stelo.html?requestId=${requestId}`,
+      url: `src/stelo.html?rpcRequestId=${rpcRequestId}`,
       type: "popup",
       width: NOTIFICATION_WIDTH,
       height: NOTIFICATION_HEIGHT,

@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { omit } from "lodash";
+import { filter, forEach, omit } from "lodash";
 import React, { useEffect } from "react";
 import {
   CreateEventMutation,
@@ -23,7 +23,6 @@ import {
   setBackgroundGradientCreator,
   setDappInfoCreator,
   setParsedRequestCreator,
-  setParsingCreator,
   setRequestCreator,
   AppStateProviderProps,
   AppStateContext,
@@ -38,6 +37,7 @@ import {
   setUrlCreator,
   getMassagedParams,
 } from "./sharedStateContext";
+import { log } from "../shared/logger";
 
 const defaultRiskResult: RiskResult = {
   riskScore: RiskScore.Medium,
@@ -51,7 +51,7 @@ const defaultRiskResult: RiskResult = {
 };
 
 export function AppStateProvider({
-  requestId,
+  rpcRequestId,
   children,
 }: AppStateProviderProps) {
   const [state, dispatch] = React.useReducer(appStateReducer, initialState);
@@ -60,7 +60,6 @@ export function AppStateProvider({
   const setRequest = setRequestCreator(dispatch);
   const setUrl = setUrlCreator(dispatch);
   const setDappInfo = setDappInfoCreator(dispatch);
-  const setParsing = setParsingCreator(dispatch);
   const setLoading = setLoadingCreator(dispatch);
   const setWarning = setWarningCreator(dispatch);
   const setRiskResult = setRiskResultCreator(dispatch);
@@ -93,6 +92,7 @@ export function AppStateProvider({
             ...omit(state?.parsedRequest, "_raw"),
             ...state.dappInfo,
             ...state.request,
+            ...state.riskResult,
             ...(properties || {}),
           },
         },
@@ -101,15 +101,16 @@ export function AppStateProvider({
   };
 
   useEffect(() => {
-    if (!requestId) return;
+    if (!rpcRequestId) return;
     const t = async () => {
-      const { request, sender } = await popRequestForId(requestId);
+      setLoading(true);
+      const { request, sender } = await popRequestForId(rpcRequestId);
       const _url = new URL(sender.tab?.url || sender.url!);
       const url = _url.href;
       setUrl(url);
       setRequest(request);
       const massagedParams = getMassagedParams(request);
-      await allSettled(
+      const results = await allSettled(
         async () => {
           const { data, error } = await parseRequestQuery({
             variables: {
@@ -150,11 +151,14 @@ export function AppStateProvider({
         }
       );
 
+      forEach(results, (result) => {
+        if (result.status == "rejected")
+          log("Request promise failed to resolve", result.reason);
+      });
       setLoading(false);
-      setParsing(false);
     };
     t();
-  }, [requestId]);
+  }, [rpcRequestId]);
 
   useEffect(() => {
     if (!!state.request) createEvent(AnalyticsEvent.INITIATED);
@@ -163,14 +167,13 @@ export function AppStateProvider({
   return (
     <AppStateContext.Provider
       value={{
-        state: { ...state, requestId },
+        state: { ...state, rpcRequestId },
         dispatch,
         setBackgroundGradient,
         setAppMode,
         setRequest,
         setUrl,
         setDappInfo,
-        setParsing,
         setLoading,
         setParsedRequest,
         createEvent,

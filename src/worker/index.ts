@@ -26,9 +26,9 @@ requestStream.subscribe(async (payload: RequestStreamPayload) => {
   log("RECEIVED MESSAGE", payload);
   // RequestStreamPayload (for some reason) gets serialized as an object instead of an array, explicitly making an object instead
   TxRequestStore.set({
-    [payload[0].requestId]: { request: payload[0], sender: payload[1] },
+    [payload[0].rpcRequestId]: { request: payload[0], sender: payload[1] },
   });
-  await notificationManager.showPopup(payload[0].requestId!);
+  await notificationManager.showPopup(payload[0].rpcRequestId!);
 });
 
 // Send Rejection if Pop-up was Closed
@@ -37,7 +37,7 @@ chrome.runtime.onConnect.addListener(async function (port) {
   const requests = await TxRequestStore.get();
   if (Object.keys(requests).indexOf(port.name) >= 0) {
     port.onDisconnect.addListener(function () {
-      sendDecisionToCS([{ approval: false, requestId: port.name }, {}]);
+      sendDecisionToCS([{ approval: false, rpcRequestId: port.name }, {}]);
     });
   }
 });

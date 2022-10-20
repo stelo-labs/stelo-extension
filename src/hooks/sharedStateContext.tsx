@@ -77,12 +77,11 @@ export type AppMode = typeof AppModes[number];
 export type AppState = {
   backgroundGradient: BoxProps["background"];
   appMode: AppMode;
-  requestId: string;
+  rpcRequestId: string;
   url: string;
   request: SteloRequest | undefined;
   parsedRequest: ParsedRPCRequest | undefined;
   dappInfo: DappStatus;
-  parsing: boolean;
   loading: boolean;
   warning: boolean;
   riskResult: RiskResult;
@@ -91,12 +90,11 @@ export type AppState = {
 export const initialState: AppState = {
   appMode: "standard",
   backgroundGradient: "unknown",
-  requestId: "",
+  rpcRequestId: "",
   url: "unknown",
   dappInfo: defaultDappStatus,
   request: undefined,
   parsedRequest: undefined,
-  parsing: true,
   loading: true,
   warning: false,
   riskResult: {
@@ -111,26 +109,24 @@ export const initialState: AppState = {
 
 export enum AnalyticsEvent {
   INITIATED = "INITIATED",
+  ERROR = "ERROR",
+  WARNING = "WARNING",
   LOAD_SUCCEEDED = "LOAD_SUCCEEDED",
   LOAD_FAILED = "LOAD_FAILED",
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
   CLOSED = "CLOSED",
   REPORTED = "REPORTED",
-  ERROR = "ERROR",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  APPROVED_ERROR = "APPROVED_ERROR",
+  REJECTED_ERROR = "REJECTED_ERROR",
+  APPROVED_WARNING = "APPROVED_WARNING",
+  REJECTED_WARNING = "REJECTED_WARNING",
 }
 
 export type SetGradient = {
   type: "set_gradient";
   data: {
     status: AppState["backgroundGradient"];
-  };
-};
-
-export type SetParsing = {
-  type: "set_parsing";
-  data: {
-    parsing: boolean;
   };
 };
 
@@ -197,7 +193,6 @@ export type Action =
   | SetGradient
   | setParsedRequest
   | SetUrl
-  | SetParsing
   | SetLoading
   | SetWarning
   | SetRiskResult;
@@ -250,13 +245,6 @@ export const setDappInfoCreator = actionCreator(
   }
 );
 
-export const setParsingCreator = actionCreator((parsing: boolean) => {
-  return {
-    type: "set_parsing",
-    data: { parsing },
-  };
-});
-
 export const setLoadingCreator = actionCreator((loading: boolean) => {
   return {
     type: "set_loading",
@@ -297,8 +285,6 @@ export const appStateReducer = (state: AppState, action: Action): AppState => {
       return { ...state, backgroundGradient: action.data.status };
     case "set_app_mode":
       return { ...state, appMode: action.data.mode };
-    case "set_parsing":
-      return { ...state, parsing: action.data.parsing };
     case "set_loading":
       return { ...state, loading: action.data.loading };
     case "set_warning":
@@ -330,7 +316,6 @@ export type AppStateContextType = {
   setRequest: F.Return<typeof setRequestCreator>;
   setUrl: F.Return<typeof setUrlCreator>;
   setDappInfo: F.Return<typeof setDappInfoCreator>;
-  setParsing: F.Return<typeof setParsingCreator>;
   setLoading: F.Return<typeof setLoadingCreator>;
   setWarning: F.Return<typeof setWarningCreator>;
   setRiskResult: F.Return<typeof setRiskResultCreator>;
@@ -340,7 +325,7 @@ export type AppStateContextType = {
 
 export type AppStateProviderProps = {
   children: React.ReactNode;
-  requestId: string;
+  rpcRequestId: string;
 };
 
 export const AppStateContext =
@@ -364,7 +349,6 @@ export function useAppState() {
     setRequest,
     setUrl,
     setDappInfo,
-    setParsing,
     setLoading,
     setParsedRequest,
     createEvent,
@@ -379,7 +363,6 @@ export function useAppState() {
     setRequest,
     setUrl,
     setDappInfo,
-    setParsing,
     setLoading,
     setParsedRequest,
     createEvent,

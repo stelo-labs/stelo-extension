@@ -5,23 +5,19 @@ import App from "./SteloApp";
 import "./index.css";
 import { TxErrorView } from "./components/TxError";
 import { AppStateProvider } from "./hooks/appStateProvider";
-import { client } from "./shared/apollo";
-
-let requestId;
-try {
-  const params = new URLSearchParams(window.location.search);
-  requestId = params.get("requestId");
-  // Allows us to listen for onDisconnect in the serviceWorker
-  chrome.runtime.connect({ name: requestId as string });
-} catch (error) {
-  // No requestId but need to continue
-}
+import { client, rpcRequestId } from "./shared/apollo";
 
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <AppStateProvider requestId={requestId as string}>
-        {!requestId ? <TxErrorView /> : <App />}
+      <AppStateProvider rpcRequestId={rpcRequestId as string}>
+        {!rpcRequestId ? (
+          <TxErrorView
+            analyticsMessage={"Missing RPC Request ID in App Mount"}
+          />
+        ) : (
+          <App />
+        )}
       </AppStateProvider>
     </ApolloProvider>
   </React.StrictMode>,

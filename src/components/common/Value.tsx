@@ -26,7 +26,7 @@ export const Value = ({ value, type, symbol = "ETH" }: ValueProps) => {
     } ${symbol}`;
   }
   return (
-    <Box marginY="6x" alignItems={"center"}>
+    <Box paddingY="6x" alignItems={"center"}>
       <Text
         as="h3"
         size="18"

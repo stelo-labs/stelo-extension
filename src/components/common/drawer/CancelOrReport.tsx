@@ -12,7 +12,7 @@ type CancelOrReportProps = {
 
 export const CancelOrReport = ({ onReport }: CancelOrReportProps) => {
   const { createEvent } = useAppState();
-  const { requestId } = useAppState();
+  const { rpcRequestId } = useAppState();
   return (
     <Box
       paddingY="4x"
@@ -24,11 +24,9 @@ export const CancelOrReport = ({ onReport }: CancelOrReportProps) => {
             color="secondary"
             onClick={() => {
               createEvent(AnalyticsEvent.REJECTED);
-              sendDecision({ approval: false, requestId: requestId }).then(
-                async () => {
-                  window.close();
-                }
-              );
+              sendDecision({ approval: false, rpcRequestId }).then(async () => {
+                window.close();
+              });
             }}
           >
             <XIcon
@@ -42,11 +40,9 @@ export const CancelOrReport = ({ onReport }: CancelOrReportProps) => {
             color="destructive"
             onClick={() => {
               onReport();
-              sendDecision({ approval: false, requestId: requestId }).then(
-                async () => {
-                  window.close();
-                }
-              );
+              sendDecision({ approval: false, rpcRequestId }).then(async () => {
+                window.close();
+              });
             }}
           >
             <CheckCircleIcon

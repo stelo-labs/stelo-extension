@@ -4,13 +4,29 @@ import { sendDecision } from "../../../shared/messages";
 import Button, { ButtonProps } from "../../layout/Button";
 import { Box } from "../../layout/Box";
 import { AnalyticsEvent, useAppState } from "../../../hooks/sharedStateContext";
+import { RiskScore } from "../../../generated/graphql";
 
 type ApproveOrRejectProps = {
   color?: ButtonProps["color"];
+  error?: boolean;
 };
-export const ApproveOrReject = ({ color }: ApproveOrRejectProps) => {
-  const { createEvent } = useAppState();
-  const { warning, setAppMode, requestId } = useAppState();
+export const ApproveOrReject = ({
+  color,
+  error = false,
+}: ApproveOrRejectProps) => {
+  const { createEvent, warning, setAppMode, rpcRequestId, riskResult } =
+    useAppState();
+  const isWarning = riskResult.riskScore === RiskScore.High;
+  const approved = error
+    ? AnalyticsEvent.APPROVED_ERROR
+    : isWarning
+    ? AnalyticsEvent.APPROVED_WARNING
+    : AnalyticsEvent.APPROVED;
+  const rejected = error
+    ? AnalyticsEvent.REJECTED_ERROR
+    : isWarning
+    ? AnalyticsEvent.REJECTED_WARNING
+    : AnalyticsEvent.REJECTED;
   return (
     <Box
       paddingY="4x"
@@ -39,12 +55,10 @@ export const ApproveOrReject = ({ color }: ApproveOrRejectProps) => {
             style={{ width: "156px" }}
             color="secondary"
             onClick={() => {
-              createEvent(AnalyticsEvent.REJECTED);
-              sendDecision({ approval: false, requestId: requestId }).then(
-                async () => {
-                  window.close();
-                }
-              );
+              createEvent(rejected);
+              sendDecision({ approval: false, rpcRequestId }).then(async () => {
+                window.close();
+              });
             }}
           >
             <XIcon
@@ -58,12 +72,10 @@ export const ApproveOrReject = ({ color }: ApproveOrRejectProps) => {
             disabled={warning}
             color={color ? color : "primary"}
             onClick={() => {
-              createEvent(AnalyticsEvent.APPROVED);
-              sendDecision({ approval: true, requestId: requestId }).then(
-                async () => {
-                  window.close();
-                }
-              );
+              createEvent(approved);
+              sendDecision({ approval: true, rpcRequestId }).then(async () => {
+                window.close();
+              });
             }}
           >
             <CheckCircleIcon

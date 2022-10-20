@@ -9,7 +9,6 @@ import {
   setBackgroundGradientCreator,
   setDappInfoCreator,
   setParsedRequestCreator,
-  setParsingCreator,
   setRequestCreator,
   AppStateProviderProps,
   AppStateContext,
@@ -40,7 +39,6 @@ export function StorybookStateProvider({
   const setRequest = setRequestCreator(dispatch);
   const setUrl = setUrlCreator(dispatch);
   const setDappInfo = setDappInfoCreator(dispatch);
-  const setParsing = setParsingCreator(dispatch);
   const setLoading = setLoadingCreator(dispatch);
   const setParsedRequest = setParsedRequestCreator(dispatch);
   const setWarning = setWarningCreator(dispatch);
@@ -53,7 +51,6 @@ export function StorybookStateProvider({
     const t = async () => {
       if (state.parsedRequest) {
         setLoading(false);
-        setParsing(false);
         return;
       }
       if (!state.request) throw new Error("Need Request");
@@ -72,7 +69,6 @@ export function StorybookStateProvider({
 
       setParsedRequest(parsedRequest);
       setLoading(false);
-      setParsing(false);
     };
     t();
   }, []);
@@ -80,14 +76,13 @@ export function StorybookStateProvider({
   return (
     <AppStateContext.Provider
       value={{
-        state: { ...state, requestId: "" },
+        state: { ...state, rpcRequestId: "" },
         dispatch,
         setBackgroundGradient,
         setAppMode,
         setRequest,
         setUrl,
         setDappInfo,
-        setParsing,
         setLoading,
         setParsedRequest,
         setWarning,
@@ -95,7 +90,7 @@ export function StorybookStateProvider({
         createEvent,
       }}
     >
-      {!state.parsing && children}
+      {!state.loading && children}
     </AppStateContext.Provider>
   );
 }

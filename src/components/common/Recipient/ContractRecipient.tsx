@@ -53,6 +53,17 @@ export const ContractRecipient = ({
   const contract = data?.contract;
   if (error) log(error);
 
+  let firstDeployedString;
+  try {
+    firstDeployedString = formatDistance(
+      new Date(contract?.deployedAt),
+      new Date(),
+      { addSuffix: true }
+    );
+  } catch {
+    firstDeployedString = ": Unknown";
+  }
+
   return (
     <>
       <Header
@@ -112,11 +123,7 @@ export const ContractRecipient = ({
             ></CardRow>
           )}
           <CardRow
-            text={`First deployed ${formatDistance(
-              new Date(contract?.deployedAt),
-              new Date(),
-              { addSuffix: true }
-            )}`}
+            text={`First deployed ${firstDeployedString}`}
             icon={
               <ClockIcon
                 style={{ fill: "gray", height: "20px", width: "20px" }}

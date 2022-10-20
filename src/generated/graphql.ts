@@ -222,6 +222,7 @@ export type Query = {
 export type QueryRpcRequestArgs = {
   method: Scalars["String"];
   params: Array<Scalars["String"]>;
+  url?: InputMaybe<Scalars["String"]>;
   userAddress?: InputMaybe<Scalars["String"]>;
 };
 
@@ -275,6 +276,7 @@ export type RpcRequest = {
   parsedSignature?: Maybe<Scalars["Json"]>;
   parsedTransaction?: Maybe<Scalars["Json"]>;
   risk: RiskResult;
+  userAddress?: Maybe<Scalars["String"]>;
 };
 
 export type RpcRequestRiskArgs = {

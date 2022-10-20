@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Stack from "../layout/Stack";
 import { Hero } from "../common/Hero";
 import { gql, useQuery } from "@apollo/client";
@@ -6,10 +7,10 @@ import { Spinner } from "../common/Spinner/Spinner";
 import { BigNumber, utils } from "ethers";
 import { NFTCollection, Value } from "../common";
 import { OpenSeaListingCard } from "./common/OpenSeaListingCard";
-import { useEffect } from "react";
 import { log } from "../../shared/logger";
 import { AnalyticsEvent, useAppState } from "../../hooks/sharedStateContext";
 import { SeaportERC721ListingSignatureRequest } from "../../signature/seaport/types";
+import { RiskFactors } from "../common/RiskFactorsCard";
 
 type OpenSeaComponentProps = {
   sig: SeaportERC721ListingSignatureRequest;
@@ -35,7 +36,7 @@ const OPENSEA_LISTING_QUERY = gql`
 `;
 
 export const SeaportERC721ListComponent = ({ sig }: OpenSeaComponentProps) => {
-  const { createEvent } = useAppState();
+  const { createEvent, riskResult } = useAppState();
   const { loading, error, data } = useQuery<OpenSeaListingQuery>(
     OPENSEA_LISTING_QUERY,
     {
@@ -79,6 +80,9 @@ export const SeaportERC721ListComponent = ({ sig }: OpenSeaComponentProps) => {
           ></Value>
         }
       />
+      {riskResult.riskFactors.length > 0 && (
+        <RiskFactors riskFactors={riskResult.riskFactors} />
+      )}
       <OpenSeaListingCard bill={sig.bill} expiry={sig.expiry} />
       {erc721 && <NFTCollection nft={erc721} />}
     </Stack>

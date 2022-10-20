@@ -8,7 +8,7 @@ export type EthersRequest = {
 
 export interface SteloRequest extends EthersRequest {
   userAddress: string;
-  requestId: UUID;
+  rpcRequestId: UUID;
   blockNumber?: number;
 }
 
@@ -48,5 +48,5 @@ export const isTxMethod = isMember(txMethods);
 
 export type TxDecision = {
   approval: boolean;
-  requestId: UUID;
+  rpcRequestId: UUID;
 };

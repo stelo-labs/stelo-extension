@@ -119,10 +119,10 @@ export class RPCProviderFacade {
   }
 
   async waitForDecision(request: EthersRequest) {
-    const requestId = uuidv4();
+    const rpcRequestId = uuidv4();
     const event = new CustomEvent("STELO", {
       detail: {
-        requestId,
+        rpcRequestId,
         ...request,
         userAddress: window.ethereum.selectedAddress,
       },
@@ -132,7 +132,7 @@ export class RPCProviderFacade {
       window.addEventListener("message", (event) => {
         if (
           event.data.origin === "stelo" &&
-          event.data.requestId === requestId
+          event.data.rpcRequestId === rpcRequestId
         ) {
           event.data.approval
             ? res(undefined)

@@ -10,6 +10,7 @@ import Stack from "../layout/Stack";
 import React from "react";
 import { useAppState } from "../../hooks/sharedStateContext";
 import { RiskScore } from "../../generated/graphql";
+import { isParsedTx, ParsedRPCRequest } from "../../RPCRequestParser";
 
 export const listStatus = [
   "UNKNOWN",
@@ -25,13 +26,26 @@ export type DappStatus = {
   allowedContracts: ({ id: string } | null)[];
 };
 
+const isDappAllowedForContract = (
+  parsedRequest: ParsedRPCRequest,
+  dappInfo: DappStatus
+) => {
+  return (
+    isParsedTx(parsedRequest) &&
+    parsedRequest.transactionType !== "ETH" &&
+    dappInfo.allowedContracts
+      .map((x) => x?.id)
+      .includes(parsedRequest.toAddress)
+  );
+};
+
 export const DappInfo = () => {
-  const { riskResult, dappInfo } = useAppState();
+  const { parsedRequest, dappInfo } = useAppState();
   switch (dappInfo.approvalStatus) {
     case "UNKNOWN":
       return <UnrecognizedDappInfo url={dappInfo.rootUrl} />;
     case "RESTRICTED":
-      if (riskResult.riskScore === RiskScore.Low)
+      if (!!parsedRequest && isDappAllowedForContract(parsedRequest, dappInfo))
         return <RestrictedDappInfo url={dappInfo.rootUrl} />;
       return <UnrecognizedDappInfo url={dappInfo.rootUrl} />;
     case "BLACKLISTED":

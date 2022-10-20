@@ -1,6 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import "./App.css";
-import { TxErrorView } from "./components/TxError";
+import { ErrorBoundaryTxErrorView, TxErrorView } from "./components/TxError";
 import { Box } from "./components/layout/Box";
 import { Spinner } from "./components/common/Spinner/Spinner";
 import { StandardView } from "./StandardModeView";
@@ -13,21 +13,19 @@ function App() {
   const {
     request,
     parsedRequest,
-    parsing,
     loading,
     appMode,
     backgroundGradient,
     warning,
   } = useAppState();
 
-  const isParsingOrLoading = parsing || loading;
-  const isError = !isParsingOrLoading && (!request || !parsedRequest);
-  const isWarning = !isParsingOrLoading && !isError && warning;
+  const isError = !loading && (!request || !parsedRequest);
+  const isWarning = !loading && !isError && warning;
   const isParsed =
-    !isParsingOrLoading && !isError && !isWarning && request && parsedRequest;
+    !loading && !isError && !isWarning && request && parsedRequest;
 
   return (
-    <ErrorBoundary fallback={<TxErrorView />}>
+    <ErrorBoundary FallbackComponent={ErrorBoundaryTxErrorView}>
       <Box
         background={backgroundGradient}
         overflow="hidden"
@@ -38,13 +36,17 @@ function App() {
         {appMode == "report" && <ReportView />}
         {appMode == "standard" && (
           <>
-            {isParsingOrLoading && (
+            {loading && (
               <>
                 <Spinner /> <ApproveOrReject />
               </>
             )}
             {isWarning && <WarningCard />}
-            {isError && <TxErrorView />}
+            {isError && (
+              <TxErrorView
+                analyticsMessage={"Request or parsed request was missing"}
+              />
+            )}
             {isParsed && <StandardView />}
           </>
         )}

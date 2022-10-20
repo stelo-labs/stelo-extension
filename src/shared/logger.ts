@@ -1,7 +1,11 @@
+import LogStore from "./LogStore";
 export const log = (...args: any[]) => {
-  console.log(
-    "%c [STELO] >>>>>>>>> ",
-    "background: #222; color: #bada55",
-    ...args
-  );
+  LogStore.push(...args);
+  if (!import.meta.env.PROD) {
+    console.log(
+      "%c [STELO] >>>>>>>>> ",
+      "background: #222; color: #bada55",
+      ...args
+    );
+  }
 };

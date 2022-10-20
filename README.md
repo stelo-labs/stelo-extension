@@ -39,10 +39,10 @@ Stelo does not modify the request as long as the user accepts the request in Ste
 
 ```
 async waitForDecision(request: EthersRequest) {
-    const requestId = uuidv4();
+    const rpcRequestId = uuidv4();
     const event = new CustomEvent("STELO", {
       detail: {
-        requestId,
+        rpcRequestId,
         ...request,
         userAddress: window.ethereum.selectedAddress,
       },
@@ -52,7 +52,7 @@ async waitForDecision(request: EthersRequest) {
       window.addEventListener("message", (event) => {
         if (
           event.data.origin === "stelo" &&
-          event.data.requestId === requestId
+          event.data.rpcRequestId === rpcRequestId
         ) {
           event.data.approval
             ? res(undefined)
