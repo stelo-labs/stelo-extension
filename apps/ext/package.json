@@ -1,0 +1,84 @@
+{
+  "name": "stelo-extension",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build --outDir release && yarn zip",
+    "zip": "tar cvf  \"release.$(date +%s).zip\" release",
+    "test": "jest",
+    "lint": "eslint src --quiet",
+    "lint:warn": "eslint src",
+    "fmt": "prettier -u --write src"
+  },
+  "dependencies": {
+    "@extend-chrome/messages": "^1.2.2",
+    "@extend-chrome/storage": "^1.5.0",
+    "@vanilla-extract/css": "^1.7.0",
+    "@vanilla-extract/recipes": "^0.2.4",
+    "@vanilla-extract/sprinkles": "^1.4.1",
+    "@vanilla-extract/vite-plugin": "^3.1.6",
+    "clsx": "^1.1.1",
+    "ethers": "^5.6.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "uiv2": "*",
+    "utils": "*",
+    "uuid": "^8.3.2",
+    "webextension-polyfill": "^0.9.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.14.4",
+    "@babel/preset-react": "^7.13.13",
+    "@babel/preset-typescript": "^7.17.12",
+    "@crxjs/vite-plugin": "1.0.2",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^11.2.7",
+    "@types/jest": "^28.1.6",
+    "@types/lodash": "^4.14.182",
+    "@types/mocha": "^9.1.1",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "@types/uuid": "^8.3.4",
+    "@types/webextension-polyfill": "^0.8.3",
+    "@types/yargs": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@vitejs/plugin-react": "^1.3.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^27.1.3",
+    "eslint-plugin-prettier": "^4.2.1",
+    "identity-obj-proxy": "^3.0.0",
+    "prettier": "^2.7.1",
+    "rollup-plugin-chrome-extension": "^4.0.1-25",
+    "ts-toolbelt": "^9.6.0",
+    "typescript": "^4.6.3",
+    "vite": "2.9.9"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "\\.(css|less)$": "identity-obj-proxy"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
+    ]
+  },
+  "msw": {
+    "workerDirectory": "src/static"
+  }
+}

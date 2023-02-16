@@ -1,0 +1,12 @@
+{
+  "name": "shared_types",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "ethers": "^5.7.2"
+  },
+  "devDependences": {}
+}

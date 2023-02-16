@@ -1,0 +1,29 @@
+{
+  "name": "uiv2",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.tsx",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "@heroicons/react": "^2.0.14",
+    "@radix-ui/react-aspect-ratio": "^0.1.4",
+    "clsx": "^1.2.1",
+    "date-fns": "^2.29.3",
+    "ethers": "^5.7.2",
+    "from-exponential": "^1.1.1",
+    "lodash": "^4.17.21",
+    "polished": "^4.2.2",
+    "pretty-num": "^0.5.2",
+    "react-animate-height": "^3.1.0",
+    "swr": "^2.0.0",
+    "thousands": "^1.0.1",
+    "usehooks-ts": "^2.9.1",
+    "utils": "*",
+    "zustand": "^4.3.1",
+    "react-content-loader": "^6.2.0"
+  },
+  "devDependencies": {
+    "shared_types": "*"
+  }
+}
